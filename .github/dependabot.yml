@@ -1,6 +1,5 @@
 version: 2
 updates:
-  # Update npm dependencies for the repository root
   - package-ecosystem: "npm"
     directory: "/" 
     schedule:
@@ -8,22 +7,11 @@ updates:
       day: "monday"
       time: "04:00"
     open-pull-requests-limit: 10
-    # Optionally ignore major version bumps for specific packages
-    # ignore:
-    #   - dependency-name: "playwright"
-    #     update-types: ["version-update:semver-major"]
-    #   - dependency-name: "some-package"
-    #     update-types: ["version-update:semver-major"]
-    # Optionally enable automerge for low-risk updates
-    # automerge: true
 
-  # If the repo has a packages/ monorepo or other subfolders, add entries like:
-  # - package-ecosystem: "npm"
-  #   directory: "/packages/foo"
-  #   schedule:
-  #     interval: "weekly"
+   - package-ecosystem: "npm"
+    directory: "/packages/dashboard"
+  interval: "weekly"
 
-  # Keep GitHub Actions up to date
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -31,20 +19,3 @@ updates:
       day: "monday"
       time: "05:00"
     open-pull-requests-limit: 10
-
-  # Optional: Docker updates (uncomment if Dockerfiles exist)
-  # - package-ecosystem: "docker"
-  #   directory: "/"
-  #   schedule:
-  #     interval: "weekly"
-  #     day: "monday"
-  #     time: "06:00"
-  #   open-pull-requests-limit: 5
-
-# Optional registries section if you use private registries (example for GitHub Packages)
-# registries:
-#   npm-github:
-#     type: "npm-registry"
-#     url: "https://npm.pkg.github.com"
-#     username: "GITHUB_ACTOR"
-#     password: "${{ secrets.GITHUB_TOKEN }}"

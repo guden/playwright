@@ -2,9 +2,61 @@ import assert from 'assert';
 import * as net from 'net';
 import * as http from 'http';
 import * as os from 'os';
+import * as dns from 'dns';
 import { pipeline } from 'stream/promises';
 
 const pkg = { version: '1.0.0' }
+
+function isPrivateIPv4(ip: string): boolean {
+	const parts = ip.split('.').map((v) => Number(v));
+	if (parts.length !== 4 || parts.some((n) => Number.isNaN(n) || n < 0 || n > 255)) return false;
+	const [a, b] = parts;
+	return (
+		a === 10 ||
+		a === 127 ||
+		(a === 169 && b === 254) ||
+		(a === 172 && b >= 16 && b <= 31) ||
+		(a === 192 && b === 168) ||
+		a === 0
+	);
+}
+
+function isPrivateIPv6(ip: string): boolean {
+	const normalized = ip.toLowerCase();
+	return (
+		normalized === '::1' ||
+		normalized === '::' ||
+		normalized.startsWith('fc') ||
+		normalized.startsWith('fd') ||
+		normalized.startsWith('fe80:')
+	);
+}
+
+function isDisallowedAddress(ip: string): boolean {
+	const family = net.isIP(ip);
+	if (family === 4) return isPrivateIPv4(ip);
+	if (family === 6) return isPrivateIPv6(ip);
+	return true;
+}
+
+async function validateOutboundTarget(url: URL): Promise<void> {
+	if (!url.hostname) throw new Error('Missing destination hostname');
+
+	if (net.isIP(url.hostname)) {
+		if (isDisallowedAddress(url.hostname)) {
+			throw new Error(`Refusing to proxy to local/private address: ${url.hostname}`);
+		}
+		return;
+	}
+
+	const lookup = await dns.promises.lookup(url.hostname, { all: true });
+	if (!lookup.length) throw new Error(`Unable to resolve destination host: ${url.hostname}`);
+	for (const record of lookup) {
+		if (isDisallowedAddress(record.address)) {
+			throw new Error(`Refusing to proxy to local/private address: ${record.address}`);
+		}
+	}
+}
 
 import createDebug from 'debug';
 
@@ -192,6 +244,15 @@ async function onrequest(
 		res.end(
 			`Only "http:" protocol prefix is supported (got: "${parsed.protocol}")\n`
 		);
+		return;
+	}
+
+	try {
+		await validateOutboundTarget(parsed);
+	} catch (_err: unknown) {
+		const err = _err as Error;
+		res.writeHead(400);
+		res.end((err.message || 'Invalid outbound target') + '\n');
 		return;
 	}
 
