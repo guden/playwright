@@ -23,7 +23,7 @@ import https from 'https';
 import { pipeline } from 'stream';
 import zlib from 'zlib';
 import { contextTest as it, expect } from '../config/browserTest';
-import { suppressCertificateWarning } from '../config/utils';
+
 import { kTargetClosedErrorMessage } from '../config/errors';
 import { TestServer } from '../config/testserver';
 
@@ -804,15 +804,12 @@ it('should throw on non-http(s) protocol', async ({ context }) => {
 });
 
 it('should support https', async ({ context, httpsServer }) => {
-  const oldValue = process.env['NODE_TLS_REJECT_UNAUTHORIZED'];
-  // https://stackoverflow.com/a/21961005/552185
-  process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
-  suppressCertificateWarning();
+  const request = await context.request.newContext({ ignoreHTTPSErrors: true });
   try {
-    const response = await context.request.get(httpsServer.EMPTY_PAGE);
+    const response = await request.get(httpsServer.EMPTY_PAGE);
     expect(response.status()).toBe(200);
   } finally {
-    process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = oldValue;
+    await request.dispose();
   }
 });
 
