@@ -26,7 +26,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -132,7 +132,7 @@ jobs:
       copilot-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
@@ -259,7 +259,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout base commit
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
