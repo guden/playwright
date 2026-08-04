@@ -70,7 +70,7 @@
     "@babel/plugin-syntax-optional-catch-binding": "7.8.3",
     "@babel/plugin-transform-class-properties": "7.29.7",
     "@babel/plugin-transform-class-static-block": "7.29.7",
-    "@babel/plugin-transform-explicit-resource-management": "7.29.7",
+    "@babel/plugin-transform-explicit-resource-management": "8.0.1",
     "@babel/plugin-transform-export-namespace-from": "7.29.7",
     "@babel/plugin-transform-logical-assignment-operators": "7.29.7",
     "@babel/plugin-transform-modules-commonjs": "7.29.7",
