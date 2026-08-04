@@ -1,21 +1,17 @@
 version: 2
 updates:
+  # Enable version updates for npm
   - package-ecosystem: "npm"
-    directory: "/" 
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "04:00"
-    open-pull-requests-limit: 10
-
-   - package-ecosystem: "npm"
-    directory: "/packages/dashboard"
-  interval: "weekly"
-
-  - package-ecosystem: "github-actions"
+    # Look for `package.json` and `lock` files in the `root` directory
     directory: "/"
+    # Check the npm registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
+
+  # Enable version updates for Docker
+  - package-ecosystem: "docker"
+    # Look for a `Dockerfile` in the `root` directory
+    directory: "/"
+    # Check for updates once a week
     schedule:
       interval: "weekly"
-      day: "monday"
-      time: "05:00"
-    open-pull-requests-limit: 10
