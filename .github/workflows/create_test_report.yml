@@ -83,7 +83,7 @@ jobs:
 
     - name: Post report comment to PR
       if: ${{ steps.pr.outputs.number }}
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       env:
         HTML_REPORT_URL: ${{ steps.upload-report.outputs.artifact-url }}
         PR_NUMBER: ${{ steps.pr.outputs.number }}
