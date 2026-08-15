@@ -158,7 +158,7 @@
     "typescript": "6.0.3",
     "vite": "8.1.0",
     "vite-plugin-static-copy": "4.1.1",
-    "ws": "8.21.0",
+    "ws": "8.21.3",
     "xml2js": "0.6.2",
     "yaml": "2.9.0",
     "yauzl": "3.4.0",
